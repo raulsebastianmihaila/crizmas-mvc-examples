@@ -6,11 +6,25 @@ export default ({controller}) => <div>
     In these examples the items have different sizes. Whenever possible, prefer a fixed
     size, because it's more efficient.
   </div>
-  <div className="row" style={{height: 200, border: '1px solid #000'}}>
+  <div className="row" style={{width: 600, height: 200, border: '1px solid #000'}}>
     <RenderClip
       controller={controller.renderClipController}
       renderItem={({index, item, itemHeight}) => {
-        return <div key={index} style={{height: itemHeight}}>{item}</div>;
+        return <div
+          key={index}
+          style={{
+            height: itemHeight,
+            display: 'flex',
+            fontWeight: index ? 'normal' : 'bold'
+          }}>
+          {Array.from({length: 8}, (v, i) => <div
+            key={i}
+            style={{
+              flexShrink: 0,
+              width: 200,
+              padding: '0 10px'
+            }}>{renderCell(item, index, i)}</div>)}
+        </div>;
       }} />
   </div>
   <div className="row">
@@ -42,3 +56,8 @@ export default ({controller}) => <div>
       }} />
   </div>
 </div>;
+
+const renderCell = (item, rowIndex, cellIndex) =>
+  rowIndex
+    ? `${rowIndex}/${cellIndex}: ${item}`
+    : `column ${cellIndex}`;

@@ -6,7 +6,7 @@ export default Mvc.controller(function ScrollVirtualization() {
   const items1D = Array(length1D);
 
   for (let i = 0; i < length1D; i += 1) {
-    items1D[i] = i;
+    items1D[i] = i * 100;
   }
 
   const ctrl = {
