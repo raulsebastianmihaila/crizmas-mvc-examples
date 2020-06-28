@@ -5,82 +5,87 @@ import {Schedule, Course} from './model';
 
 export default Mvc.controller(function FormWithModelRouteController() {
   const schedule = new Schedule();
-
-  const form = new Form({
-    children: [
-      {
-        name: 'courses',
-        children: schedule.courses.map(getCourseInput),
-        validate: ({event, input}) => (event === 'submit' || event !== 'init' && form.isSubmitted)
-          && !input.children.length
-            ? 'Must add course'
-            : null
-      }
-    ],
-
-    actions: {
-      submit: () => {
-        ctrl.formResult = JSON.stringify(schedule, null, 2);
-      }
-    }
-  });
-
   const ctrl = {
-    form,
+    form: null,
     formResult: null
   };
+
+  const init = () => {
+    ctrl.form = new Form({
+      children: [
+        {
+          name: 'courses',
+          children: schedule.courses.map(getCourseInput),
+          validate: ({event, input}) =>
+            (event === 'submit' || event !== 'init' && ctrl.form.isSubmitted)
+              && !input.children.length
+                ? 'Must add course'
+                : null
+        }
+      ],
+
+      actions: {
+        submit: () => {
+          ctrl.formResult = JSON.stringify(schedule, null, 2);
+        }
+      }
+    });
+  };
+
+  const getCourseInput = (course) => ({
+    children: [
+      {
+        name: 'course',
+        getValue: () => course.name,
+        setValue: (name) => course.setName(name),
+        validate: validation(
+          validation.required(),
+          () => schedule.hasDuplicates(course.name) ? 'Duplicate' : null,
+          validateOnBlur(({input}) => Course.validateName(input.getValue())))
+      },
+      {
+        name: 'startTime',
+        getValue: () => course.startTime,
+        setValue: (time) => course.setStartTime(time),
+        validate: validation(
+          validation.required(),
+          validateOnBlur(() => course.validateStartTime()),
+          ({input, target, event}) =>
+            event === 'submit' || event === 'init'
+              || event === 'blur' && target === input.parent.get('endTime')
+                ? course.validateChronology()
+                : null)
+      },
+      {
+        name: 'endTime',
+        getValue: () => course.endTime,
+        setValue: (time) => course.setEndTime(time),
+        validate: validation(
+          validation.required(),
+          validateOnBlur(() => course.validateEndTime()),
+          ({input, target, event}) =>
+            event === 'submit' || event === 'init'
+              || event === 'blur' && target === input.parent.get('startTime')
+                ? course.validateChronology()
+                : null)
+      }
+    ]
+  });
 
   ctrl.addCourseRow = () => {
     const course = schedule.addCourse();
 
-    form.get('courses').add(getCourseInput(course));
+    ctrl.form.get('courses').add(getCourseInput(course));
   };
 
   ctrl.removeCourseRow = (index) => {
     schedule.removeCourse(index);
-    form.get('courses').children[index].remove();
+    ctrl.form.get('courses').children[index].remove();
   };
 
-  return ctrl;
-});
+  init();
 
-const getCourseInput = (course) => ({
-  children: [
-    {
-      name: 'course',
-      getValue: () => course.name,
-      setValue: (name) => course.setName(name),
-      validate: validation(
-        validation.required(),
-        validateOnBlur(({input}) => Course.validateName(input.getValue())))
-    },
-    {
-      name: 'startTime',
-      getValue: () => course.startTime,
-      setValue: (time) => course.setStartTime(time),
-      validate: validation(
-        validation.required(),
-        validateOnBlur(() => course.validateStartTime()),
-        ({input, target, event}) =>
-          event === 'submit' || event === 'init'
-            || event === 'blur' && target === input.parent.get('endTime')
-              ? course.validateChronology()
-              : null)
-    },
-    {
-      name: 'endTime',
-      getValue: () => course.endTime,
-      setValue: (time) => course.setEndTime(time),
-      validate: validation(
-        validation.required(),
-        validateOnBlur(() => course.validateEndTime()),
-        ({input, target, event}) =>
-          event === 'submit' || event === 'init'
-            || event === 'blur' && target === input.parent.get('startTime')
-              ? course.validateChronology()
-              : null)
-    }
-  ]
+  return ctrl;
 });
 
 const validateOnBlur = (validationFunc) => {
