@@ -7,7 +7,6 @@ label{width:100px;display:inline-block;}
 .row{margin:10px 0;}
 #app{min-width:1000px;}
 .layout__header{text-align:center;}
-.layout__subtitle a{color:#000;}
 .layout__body{padding:80px 30px 30px;display:flex;}
 .logo{color:#522;font-weight:bold;text-decoration:none;}
 .logo::before{content:"\1f384\a0";color:green;text-decoration:none;}

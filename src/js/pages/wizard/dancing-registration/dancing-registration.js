@@ -38,7 +38,7 @@ export default ({controller, children}) => {
       for each step is created in the parent route controller. However, once we leave the wizard
       altogether, we want its state to be lost, therefore the parent route controller will be a function controller as well, such that it's instantiated each time it's entered.
 
-      We also want this wizard mechanism to be reusable in other contexts of the application, therefore we use a wizard controller and wizard route controllers to handle this mechanism
+      We also want this wizard mechanism to be reusable for other contexts of the application, therefore we use a wizard controller and wizard route controllers to handle this mechanism
       and be able to focus only on implementing each step of the wizard and on putting the pieces
       together in the parent route controller.</div>
   </div>;
