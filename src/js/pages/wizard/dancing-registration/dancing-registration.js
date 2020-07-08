@@ -26,7 +26,7 @@ export default ({controller, children}) => {
       However, on the last page when we hit submit, if there are any steps that have an invalid
       form we jump to the first one in that category.
 
-      If we try to access a certain step by transitioning programatically to that step,
+      If we try to access a certain step by transitioning programmatically to that step,
       if that step hasn't been visited before, we're redirected automatically to the first step
       that has never been completed.
 
