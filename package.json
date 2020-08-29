@@ -17,7 +17,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.0.2",
     "crizmas-async-utils": "^1.1.0",
-    "crizmas-components": "^1.5.1",
+    "crizmas-components": "^1.5.2",
     "crizmas-form": "^1.1.1",
     "crizmas-mvc": "^1.0.3",
     "crizmas-promise-queue": "^1.0.2",
