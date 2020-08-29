@@ -18,7 +18,7 @@ export function Schedule() {
   };
 
   schedule.hasDuplicates = (courseName) =>
-    schedule.courses.filter((course) => course.name === courseName).length > 1;
+    !!courseName && schedule.courses.filter((course) => course.name === courseName).length > 1;
 
   return schedule;
 }
