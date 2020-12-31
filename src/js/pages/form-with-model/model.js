@@ -48,7 +48,7 @@ export function Course({
   course.validateStartTime = () => validateTime(course.startTime, 'Start time');
 
   const validateTime = (time, timeLabel) => {
-    if (time && course.availableInterval
+    if (time != null && course.availableInterval
       && (time < course.availableInterval[0] || time > course.availableInterval[1])) {
       return `${timeLabel} must be inside the interval ${
         course.availableInterval[0]} - ${course.availableInterval[1]}`;
@@ -61,7 +61,7 @@ export function Course({
 
   course.validateEndTime = () => validateTime(course.endTime, 'End time');
 
-  course.validateChronology = () => course.startTime && course.endTime
+  course.validateChronology = () => course.startTime != null && course.endTime != null
     && course.startTime >= course.endTime
       ? 'Start time must be before end time'
       : null;

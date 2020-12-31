@@ -1,6 +1,6 @@
-import Mvc from 'crizmas-mvc';
+import {controller} from 'crizmas-mvc';
 
-export default Mvc.controller(class ChildRouteController {
+export default controller(class ChildRouteController {
   constructor() {
     this.count = 0;
     this.routeFragment = null;

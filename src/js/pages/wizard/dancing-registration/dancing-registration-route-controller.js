@@ -6,7 +6,7 @@
 // that can be used for multiple wizards, therefore we will use a wizard controller
 // and wizard route controllers.
 
-import Mvc from 'crizmas-mvc';
+import {controller} from 'crizmas-mvc';
 import Form from 'crizmas-form';
 
 import WizardController from '../../../controllers/wizard/wizard';
@@ -22,7 +22,7 @@ export const stepsIds = {
   summary: 'summary'
 };
 
-export default Mvc.controller(function DancingRegistrationRouteController() {
+export default controller(function DancingRegistrationRouteController() {
   const ctrl = {
     wizardController: null,
     formResult: null

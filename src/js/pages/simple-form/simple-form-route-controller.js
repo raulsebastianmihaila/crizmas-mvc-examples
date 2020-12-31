@@ -1,27 +1,25 @@
-import Mvc from 'crizmas-mvc';
-import Form, {validation} from 'crizmas-form';
+import {controller} from 'crizmas-mvc';
+import Form, {validation, required, minLength, min, max, validate} from 'crizmas-form';
 
-export default Mvc.controller(function SimpleFormRouteController() {
+export default controller(function SimpleFormRouteController() {
   const form = new Form({
     children: [
       {
         name: 'name',
         validate: validation(
-          validation.required(),
-          validation.minLength(3),
-          lettersAndSpacesValidation)
+          required(),
+          minLength(3),
+          lettersAndSpacesValidation())
       },
       {
         name: 'age',
-        validate: validation(validation.required(), validation.min(15), validation.max(200))
+        validate: validation(required(), min(15), max(200))
       },
       {
         name: 'hobbies',
         children: [],
-        validate: ({event, input}) => (event === 'submit' || event !== 'init' && form.isSubmitted)
-          && !input.children.length
-            ? 'Must have hobbies'
-            : null
+        validate: ({input}) =>
+          input.root.isSubmitted && !input.children.length ? 'Must have hobbies' : null
       }
     ],
 
@@ -39,17 +37,19 @@ export default Mvc.controller(function SimpleFormRouteController() {
 
   ctrl.addHobbyRow = () => {
     form.get('hobbies').add({
-      validate: validation(validation.required(), lettersAndSpacesValidation)
+      validate: validation(required(), lettersAndSpacesValidation())
     });
   };
 
   return ctrl;
 });
 
-const lettersAndSpacesValidation = ({input}) => {
-  const value = input.getValue();
+const lettersAndSpacesValidation = () => {
+  return validate(({input}) => {
+    const value = input.getValue();
 
-  if (value && !value.match(/^[a-zA-Z ]*$/)) {
-    return 'Must contain only letters'
-  }
+    if (value && !value.match(/^[a-zA-Z ]*$/)) {
+      return 'Must contain only letters'
+    }
+  });
 };

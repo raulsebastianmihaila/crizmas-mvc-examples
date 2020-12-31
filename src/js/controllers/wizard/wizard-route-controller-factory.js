@@ -1,7 +1,7 @@
-import Mvc from 'crizmas-mvc';
+import {controller} from 'crizmas-mvc';
 
 export default function WizardRouteControllerFactory(stepId) {
-  return Mvc.controller(function WizardRouteController() {
+  return controller(function WizardRouteController() {
     const ctrl = {
       stepController: null,
       wizardController: null

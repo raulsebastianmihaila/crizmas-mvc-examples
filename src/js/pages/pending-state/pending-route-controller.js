@@ -1,10 +1,9 @@
-import Mvc from 'crizmas-mvc';
-import {Cancellation} from 'crizmas-async-utils';
+import {controller, observe, Cancellation} from 'crizmas-mvc';
 
 let cancellation;
 
-export default Mvc.controller({
-  child: Mvc.observe({
+export default controller({
+  child: observe({
     firstChildOperation() {
       return {
         then(resolve) {

@@ -1,6 +1,6 @@
-import Mvc from 'crizmas-mvc';
+import {controller} from 'crizmas-mvc';
 
-export default Mvc.controller(class NestedRoutesRouteController {
+export default controller(class NestedRoutesRouteController {
   constructor() {
     this.count = 0;
   }

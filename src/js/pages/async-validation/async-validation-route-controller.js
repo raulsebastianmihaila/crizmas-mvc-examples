@@ -1,17 +1,17 @@
-import Mvc from 'crizmas-mvc';
-import Form, {validation} from 'crizmas-form';
+import {controller} from 'crizmas-mvc';
+import Form, {validation, required, async, validate} from 'crizmas-form';
 
 export const takenUsernames = ['John', 'Sarah'];
 
-export default Mvc.controller(function AsyncValidationRouteController() {
+export default controller(function AsyncValidationRouteController() {
   const form = new Form({
     children: [
       {
         name: 'username',
         validate: validation(
-          validation.required(),
-          validation.async((value) =>
-            mockServerCall(
+          required(),
+          async((value) => value
+            && mockServerCall(
               1000,
               () => takenUsernames.includes(value)
                 ? 'Username is taken'
@@ -20,10 +20,12 @@ export default Mvc.controller(function AsyncValidationRouteController() {
       {
         name: 'password',
         validate: validation(
-          validation.required(),
-          validation.validate(
-            value => value && value.length < 6 ? 'The password is too short' : null,
-            {events: ['blur']}))
+          required(),
+          validate(({input}) => {
+            const value = input.getValue();
+
+            return value && value.length < 6 ? 'The password is too short' : null
+          }))
       }
     ],
 

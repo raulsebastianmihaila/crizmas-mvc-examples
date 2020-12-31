@@ -1,9 +1,9 @@
-import Mvc from 'crizmas-mvc';
-import Form, {validation} from 'crizmas-form';
+import {controller} from 'crizmas-mvc';
+import Form, {validation, required, validate} from 'crizmas-form';
 
 import {Schedule, Course} from './model';
 
-export default Mvc.controller(function FormWithModelRouteController() {
+export default controller(function FormWithModelRouteController() {
   const schedule = new Schedule();
   const ctrl = {
     form: null,
@@ -16,11 +16,8 @@ export default Mvc.controller(function FormWithModelRouteController() {
         {
           name: 'courses',
           children: schedule.courses.map(getCourseInput),
-          validate: ({event, input}) =>
-            (event === 'submit' || event !== 'init' && ctrl.form.isSubmitted)
-              && !input.children.length
-                ? 'Must add course'
-                : null
+          validate: ({input}) =>
+            input.root.isSubmitted && !input.children.length ? 'Must add course' : null
         }
       ],
 
@@ -39,35 +36,27 @@ export default Mvc.controller(function FormWithModelRouteController() {
         getValue: () => course.name,
         setValue: (name) => course.setName(name),
         validate: validation(
-          validation.required(),
+          required(),
           () => schedule.hasDuplicates(course.name) ? 'Duplicate' : null,
-          validateOnBlur(({input}) => Course.validateName(input.getValue())))
+          validateWithInit(({input}) => Course.validateName(input.getValue())))
       },
       {
         name: 'startTime',
         getValue: () => course.startTime,
         setValue: (time) => course.setStartTime(time),
         validate: validation(
-          validation.required(),
-          validateOnBlur(() => course.validateStartTime()),
-          ({input, target, event}) =>
-            event === 'submit' || event === 'init'
-              || event === 'blur' && target === input.parent.get('endTime')
-                ? course.validateChronology()
-                : null)
+          required(),
+          validateWithInit(() => course.validateStartTime()),
+          validateWithInitAndRelated(() => course.validateChronology(), 'endTime'))
       },
       {
         name: 'endTime',
         getValue: () => course.endTime,
         setValue: (time) => course.setEndTime(time),
         validate: validation(
-          validation.required(),
-          validateOnBlur(() => course.validateEndTime()),
-          ({input, target, event}) =>
-            event === 'submit' || event === 'init'
-              || event === 'blur' && target === input.parent.get('startTime')
-                ? course.validateChronology()
-                : null)
+          required(),
+          validateWithInit(() => course.validateEndTime()),
+          validateWithInitAndRelated(() => course.validateChronology(), 'startTime'))
       }
     ]
   });
@@ -88,18 +77,21 @@ export default Mvc.controller(function FormWithModelRouteController() {
   return ctrl;
 });
 
-const validateOnBlur = (validationFunc) => {
-  let error;
+const validateWithInit = (validationFunc) => {
+  return validate(
+    validationFunc,
+    {
+      events: ['init', 'blur'],
+      target: ({input, event}) => event === 'init' ? input.root : input
+    })
+};
 
-  return ({input, event, target}) => {
-    const validationResult = validationFunc({input, target});
-
-    if (!validationResult) {
-      error = null;
-    } else if (event === 'submit' || event === 'init' || target === input && event === 'blur') {
-      error = validationResult;
-    }
-
-    return error;
-  };
+const validateWithInitAndRelated = (validationFunc, relatedSiblingKey) => {
+  return validate(
+    validationFunc,
+    {
+      events: ['init', 'blur'],
+      target: ({input, event}) =>
+        event === 'init' ? input.root : input.parent.get(relatedSiblingKey)
+    });
 };

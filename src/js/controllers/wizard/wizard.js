@@ -1,6 +1,6 @@
-import Mvc from 'crizmas-mvc';
+import {controller} from 'crizmas-mvc';
 
-export default Mvc.controller(function WizardController({form, router}) {
+export default controller(function WizardController({form, router}) {
   const ctrl = {
     form,
     steps: null,

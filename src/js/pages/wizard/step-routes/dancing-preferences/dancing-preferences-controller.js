@@ -1,7 +1,7 @@
-import Mvc from 'crizmas-mvc';
-import Form, {validation} from 'crizmas-form';
+import {controller} from 'crizmas-mvc';
+import Form, {validation, required, validate} from 'crizmas-form';
 
-export default Mvc.controller(function DancingPreferencesController(wizardController) {
+export default controller(function DancingPreferencesController(wizardController) {
   const ctrl = {
     form: new Form({
       name: 'dancingPreferences',
@@ -9,20 +9,20 @@ export default Mvc.controller(function DancingPreferencesController(wizardContro
         {
           name: 'bachata',
           validate: validation(
-            validation.required(),
-            validation.validate(markValidationFunc))
+            required(),
+            markValidationFunc())
         },
         {
           name: 'salsa',
           validate: validation(
-            validation.required(),
-            validation.validate(markValidationFunc))
+            required(),
+            markValidationFunc())
         },
         {
           name: 'kizomba',
           validate: validation(
-            validation.required(),
-            validation.validate(markValidationFunc))
+            required(),
+            markValidationFunc())
         }
       ],
       actions: {
@@ -36,5 +36,10 @@ export default Mvc.controller(function DancingPreferencesController(wizardContro
   return ctrl;
 });
 
-const markValidationFunc = (value) =>
-  (value < 1 || value > 5) && 'Mark must be between 1 and 5';
+const markValidationFunc = () => {
+  return validate(({input}) => {
+    const value = input.getValue();
+
+    return value < 1 || value > 5 ? 'Mark must be between 1 and 5' : null;
+  });
+};

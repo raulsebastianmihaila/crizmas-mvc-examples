@@ -27,6 +27,10 @@ module.exports = {
   module: {
     rules: [
       {
+        include: /(crizmas-|smart-mix)/,
+        sideEffects: false
+      },
+      {
         test: /\.jsx?$/,
         // normalization needed for windows
         include: path.normalize(`${__dirname}/src`),

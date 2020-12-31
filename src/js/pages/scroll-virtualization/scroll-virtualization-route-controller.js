@@ -1,7 +1,7 @@
-import Mvc from 'crizmas-mvc';
+import {controller} from 'crizmas-mvc';
 import {RenderClipController, RenderClip2DController} from 'crizmas-components';
 
-export default Mvc.controller(function ScrollVirtualization() {
+export default controller(function ScrollVirtualization() {
   const length1D = 1e6;
   const items1D = Array(length1D);
 
